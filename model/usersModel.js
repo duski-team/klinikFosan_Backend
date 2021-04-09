@@ -1,8 +1,9 @@
 const { DataTypes }=require('sequelize')
 const sq=require("../config/connection")
+const klinik = require('./klinikModel')
 
 
-const UserModel=sq.define("users",{
+const users=sq.define("users",{
     id:{
         type: DataTypes.INTEGER,
         autoIncrement:true,
@@ -12,13 +13,13 @@ const UserModel=sq.define("users",{
         type:DataTypes.STRING,
         defaultValue:""
     },
-    nama:{
-        type: DataTypes.STRING,
-        defaultValue:""
-    },
     password:{
         type:DataTypes.STRING,
         
+    },
+    nama:{
+        type: DataTypes.STRING,
+        defaultValue:""
     },
     role:{
         type:DataTypes.STRING,
@@ -35,10 +36,29 @@ const UserModel=sq.define("users",{
         type:DataTypes.STRING,
         defaultValue:""
     },
-    noTelp:{
+    noHp:{
         type:DataTypes.STRING,
-        
     },
+    specialist:{
+        type:DataTypes.STRING,
+        defaultValue:""
+    },
+    golonganDarah:{
+        type:DataTypes.STRING,
+        defaultValue:""
+    },
+    tinggiBadan:{
+        type:DataTypes.INTEGER,
+        defaultValue:0
+    },
+    beratBadan:{
+        type:DataTypes.INTEGER,
+        defaultValue:0
+    }
 });
-UserModel.sync({alter:true})
-module.exports=UserModel
+
+users.belongsTo(klinik)
+klinik.hasMany(users)
+
+users.sync({alter:true})
+module.exports=users

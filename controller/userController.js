@@ -22,7 +22,7 @@ createAdmin()
 class Controller{
 
     static register(req,res){
-        const {username,nama,password,jabatan,alamat,noTelp,jenisKelamin,tanggalLahir}=req.body
+        const {username,password,nama,role,alamat,tanggalLahir,jenisKelamin,noHp,specialist,golonganDarah,tinggiBadan,beratBadan,klinikId}=req.body
         let encryptedPassword = bcrypt.hashPassword(password)
         users.findAll({where:{username:username}})
         .then(data=>{
@@ -34,11 +34,15 @@ class Controller{
                     username:username,
                     nama:nama,
                     password:encryptedPassword,
-                    jabatan:jabatan,
+                    role:role,
                     alamat:alamat,
-                    noTelp:noTelp,
-                    jenisKelamin:jenisKelamin,
                     tanggalLahir:tanggalLahir,
+                    jenisKelamin:jenisKelamin,
+                    noHp:noHp,
+                    specialist:specialist,
+                    golonganDarah:golonganDarah,
+                    tinggiBadan:tinggiBadan,
+                    beratBadan:beratBadan
                 },{returning:true}).then(respon=>{
                     res.status(200).json(respon)
                 }).catch(err=>{
@@ -66,6 +70,80 @@ class Controller{
         })
         .catch(err => {
             res.status(500).json({message:err})
+        })
+    }
+    
+    static update(req,res){
+        const {id}=req.params
+        const {nama,role,alamat,tanggalLahir,jenisKelamin,noHp,specialist,golonganDarah,tinggiBadan,beratBadan}=req.body
+        
+        users.update({
+           nama:nama,
+           role:role,
+           alamat:alamat,
+           tanggalLahir:tanggalLahir,
+           jenisKelamin:jenisKelamin,
+           noHp:noHp,
+           specialist:specialist,
+           golonganDarah:golonganDarah,
+           tinggiBadan:tinggiBadan,
+           beratBadan:beratBadan,
+           klinikId:klinikId
+        },{
+            where :{
+                id:id
+            },
+            returning: true,
+            plain:true
+        })
+        .then(respon=>{
+            res.json(respon)
+        })
+        .catch(err=>{
+            res.json(err)
+        })
+
+    }
+
+    static findAll(req,res){
+        
+        users.findAll({})
+        .then(respon=>{
+            res.json({respon})
+        })
+        .catch(err=>{
+            res.json(err)
+        })
+    }
+    
+    static profile(req,res){
+        const {id} = req.dataUsers
+        users.findAll({
+            where:{
+                id :id
+            }
+        },{returning:true})
+        .then(respon=>{
+            res.json({respon})
+          
+        })
+        .catch(err=>{
+            res.json(err)
+        })
+    }
+
+    static delete(req,res){
+        const {id}= req.params
+        users.destroy({
+            where:{
+                id:id
+            }
+        })
+        .then(data=>{
+            res.json("berhasil delete")
+        })
+        .catch(err=>{
+            res.json(err)
         })
     }
 }
